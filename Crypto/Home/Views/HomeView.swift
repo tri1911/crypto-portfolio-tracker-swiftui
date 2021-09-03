@@ -17,7 +17,9 @@ struct HomeView: View {
             VStack {
                 header
                 HomeStatsView()
+                SearchBarView(searchText: $store.searchText)
                 coinsList
+                Spacer()
             }
             .padding()
             .navigationBarHidden(true)
@@ -46,6 +48,8 @@ struct HomeView: View {
                 .listStyle(PlainListStyle())
             } else {
                 ProgressView()
+                    .scaleEffect(1.5)
+                    .padding()
             }
         }
     }
