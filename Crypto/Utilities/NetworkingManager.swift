@@ -8,10 +8,8 @@
 import Foundation
 import Combine
 
-// A generic class to fetch data from CoinGecko API
-// and publish the output
-class NetworkingManager
-{
+// A generic class to fetch data from an url and return a publisher
+class NetworkingManager {
     enum NetworkingError: LocalizedError {
         case badURLResponse(URL)
         case unknown
@@ -36,5 +34,14 @@ class NetworkingManager
             }
             .retry(3)
             .eraseToAnyPublisher()
+    }
+    
+    static func handleCompletion(completion: Subscribers.Completion<Error>) {
+        switch completion {
+        case .finished:
+            break
+        case .failure(let error):
+            print("Error: \(error.localizedDescription)")
+        }
     }
 }

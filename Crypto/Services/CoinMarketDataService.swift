@@ -19,15 +19,9 @@ class CoinMarketDataService
         cancellable = NetworkingManager.fetch(url)
             .decode(type: [CoinInfo].self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    print("Error: \(error.localizedDescription)")
-                }
-            }, receiveValue: { [weak self] results in
+            .sink(receiveCompletion: NetworkingManager.handleCompletion) { [weak self] results in
                 self?.coins = results
-            })
+                self?.cancellable?.cancel()
+            }
     }
 }

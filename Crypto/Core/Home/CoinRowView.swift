@@ -13,12 +13,13 @@ struct CoinRowView: View {
     var body: some View {
         HStack {
             Text("\(coin.rank)")
-            Circle().frame(width: 30, height: 30)
+            // Image
+            CoinImageView(coin).frame(width: 30, height: 30)
             Text(coin.symbol.uppercased())
             Spacer()
             VStack(alignment: .trailing) {
-                Text("\(coin.currentPrice)")
-                Text("\(coin.priceChangePercentage24H)")
+                Text("\(coin.currentPrice.asCurrencyString)")
+                Text("\(coin.priceChangePercentage24H.asPercentString)")
             }
         }
     }
