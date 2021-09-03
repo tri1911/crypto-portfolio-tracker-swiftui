@@ -21,7 +21,7 @@ struct Theme {
     let secondary = Color("SecondaryColor")
 }
 
-// MARK: - Data Sample for preview
+// MARK: - Preview Data Sample
 
 extension PreviewProvider {
     static var previewData: PreviewData { .shared }
@@ -30,6 +30,12 @@ extension PreviewProvider {
 class PreviewData {
     static let shared = PreviewData()
     private init() {}
+    
+    let homeStore = HomeStore()
+    
+    let stat1 = StatisticInfo(title: "Market Cap", value: "$2.34Tr", changePercentage: 5.87)
+    let stat2 = StatisticInfo(title: "Total Volume", value: "$155.87Bn")
+    let stat3 = StatisticInfo(title: "Portfolio Values", value: "$50.4k", changePercentage: -1.23)
     
     let coin = CoinInfo(
         id: "bitcoin",

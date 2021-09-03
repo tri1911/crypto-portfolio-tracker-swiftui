@@ -23,10 +23,10 @@ class CoinImageService {
         self.cachedImageName = coin.id
         guard let url = URL(string: coin.image) else { return }
         if let cachedImage = imageCachingManager.retrieveImage(name: cachedImageName, in: cachingImagesDirectory) {
-            print("Retrieved image for \(coin.name) from disk.")
+            // print("Retrieved image for \(coin.name) from disk.")
             self.image = cachedImage
         } else {
-            print("Fetching image for \(coin.name).")
+            // print("Fetching image for \(coin.name).")
             fetchImage(url)
         }
     }

@@ -8,26 +8,21 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject var homeVM = HomeViewModel()
+    @StateObject var store = HomeStore()
+    
+    private var coins: [CoinInfo]? { store.coins }
     
     var body: some View {
         NavigationView {
-            if let coins = homeVM.coins {
-                VStack {
-                    header
-                    List {
-                        ForEach(coins) { coin in
-                            CoinRowView(coin: coin)
-                        }
-                    }
-                    .listStyle(PlainListStyle())
-                }
-                .padding()
-                .navigationBarHidden(true)
-            } else {
-                ProgressView()
+            VStack {
+                header
+                HomeStatsView()
+                coinsList
             }
+            .padding()
+            .navigationBarHidden(true)
         }
+        .environmentObject(store)
     }
     
     var header: some View {
@@ -37,6 +32,21 @@ struct HomeView: View {
             Text("Live Prices")
             Spacer()
             AnimatedButton(imageName: "chevron.forward")
+        }
+    }
+    
+    var coinsList: some View {
+        Group {
+            if let coins = coins {
+                List {
+                    ForEach(coins) { coin in
+                        CoinRowView(coin: coin)
+                    }
+                }
+                .listStyle(PlainListStyle())
+            } else {
+                ProgressView()
+            }
         }
     }
 }
