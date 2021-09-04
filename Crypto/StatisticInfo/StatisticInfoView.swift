@@ -10,11 +10,26 @@ import SwiftUI
 struct StatisticInfoView: View {
     let stat: StatisticInfo
     
+    private var isPositiveChange: Bool { (stat.changePercentage ?? 0) >= 0  }
+    
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 5) {
             Text(stat.title)
+                .font(.caption)
+                .foregroundColor(.theme.secondary)
             Text(stat.value)
-            Text(stat.changePercentage?.asPercentString ?? "")
+                .font(.headline)
+                .foregroundColor(.theme.accent)
+            HStack(spacing: 3) {
+                Image(systemName: "triangle.fill")
+                    .font(.caption2)
+                    .rotationEffect(Angle(degrees: isPositiveChange ? 0 : 180))
+                Text(stat.changePercentage?.asPercentString ?? "")
+                    .font(.caption)
+                    .bold()
+            }
+            .foregroundColor(isPositiveChange ? .theme.green : .red)
+            .opacity(stat.changePercentage != nil ? 1 : 0)
         }
     }
 }

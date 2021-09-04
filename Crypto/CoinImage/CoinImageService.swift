@@ -13,12 +13,6 @@ class CoinImageService {
     @Published var image: UIImage?
     private var cancellable: AnyCancellable?
     
-    // MARK: - Caching
-    
-    private let imageCachingManager = ImageCachingManager.shared
-    private let cachingImagesDirectory = "CoinImagesCache"
-    private let cachedImageName: String
-    
     init(for coin: CoinInfo) {
         self.cachedImageName = coin.id
         guard let url = URL(string: coin.image) else { return }
@@ -42,4 +36,10 @@ class CoinImageService {
                 self.imageCachingManager.cacheImage(fetchedImage, name: self.cachedImageName, in: self.cachingImagesDirectory)
             }
     }
+    
+    // MARK: - Caching
+    
+    private let imageCachingManager = ImageCachingManager.shared
+    private let cachingImagesDirectory = "CoinImagesCache"
+    private let cachedImageName: String
 }

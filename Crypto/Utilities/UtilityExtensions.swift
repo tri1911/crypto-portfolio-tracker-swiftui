@@ -1,5 +1,5 @@
 //
-//  Extensions.swift
+//  UtilityExtensions.swift
 //  Crypto
 //
 //  Created by Elliot Ho on 2021-09-02.
@@ -234,7 +234,7 @@ class PreviewData {
             57336.828870254896
         ]),
         priceChangePercentage24HInCurrency: 3952.64,
-        currentHoldings: 1.5)
+        holding: 1.5)
 }
 
 // MARK: - Double
@@ -309,4 +309,11 @@ extension UIApplication {
     func endEditing() {
         sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
+}
+
+// MARK: - NSPredicate
+
+extension NSPredicate {
+    static var all = NSPredicate(format: "TRUEPREDICATE")
+    static var none = NSPredicate(format: "FALSEPREDICATE")
 }

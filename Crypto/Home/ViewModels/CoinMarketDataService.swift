@@ -8,8 +8,7 @@
 import Foundation
 import Combine
 
-class CoinMarketDataService
-{
+class CoinMarketDataService {
     @Published var coins: [CoinInfo]?
     private var cancellable: AnyCancellable?
     

@@ -10,18 +10,32 @@ import SwiftUI
 struct CoinRowView: View {
     let coin: CoinInfo
     
+    private var isPositiveChange: Bool { coin.priceChangePercentage24H >= 0 }
+    
     var body: some View {
         HStack {
             Text("\(coin.rank)")
-            // Image
-            CoinImageView(coin).frame(width: 30, height: 30)
+                .font(.caption)
+                .foregroundColor(.theme.secondary)
+            CoinImageView(coin)
+                .frame(width: 30, height: 30)
             Text(coin.symbol.uppercased())
+                .font(.headline)
+                .foregroundColor(.theme.accent)
             Spacer()
             VStack(alignment: .trailing) {
                 Text("\(coin.currentPrice.asCurrencyString)")
-                Text("\(coin.priceChangePercentage24H.asPercentString)")
+                    .foregroundColor(.theme.accent)
+                HStack(spacing: 3) {
+                    Image(systemName: "triangle.fill")
+                        .rotationEffect(Angle(degrees: isPositiveChange ? 0 : 180))
+                        .font(.caption2)
+                    Text("\(coin.priceChangePercentage24H.asPercentString)")
+                }
+                .foregroundColor(isPositiveChange ? .theme.green : .theme.red)
             }
         }
+        .font(.subheadline)
     }
 }
 

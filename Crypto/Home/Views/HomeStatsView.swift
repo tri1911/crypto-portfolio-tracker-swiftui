@@ -9,19 +9,24 @@ import SwiftUI
 
 struct HomeStatsView: View {
     @EnvironmentObject var store: HomeStore
+    @Binding var showsPortfolio: Bool
+    
+    private var screenWidth: CGFloat { UIScreen.main.bounds.width }
     
     var body: some View {
         HStack(spacing: 0) {
             ForEach(store.statistics) {
                 StatisticInfoView(stat: $0)
+                    .frame(width: screenWidth / 3)
             }
         }
+        .frame(width: screenWidth, alignment: showsPortfolio ? .trailing : .leading)
     }
 }
 
 struct HomeStatsView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeStatsView()
+        HomeStatsView(showsPortfolio: .constant(true))
             .environmentObject(previewData.homeStore)
     }
 }

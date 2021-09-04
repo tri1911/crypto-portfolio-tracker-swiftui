@@ -31,7 +31,7 @@ struct SearchBarView: View {
         .background(Color.theme.background)
         .cornerRadius(25.0)
         .shadow(color: .theme.accent.opacity(0.2), radius: 10, x: 0.0, y: 0.0)
-        .padding(.vertical)
+        .padding()
     }
 }
 
