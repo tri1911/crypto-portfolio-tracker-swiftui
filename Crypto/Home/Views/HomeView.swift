@@ -79,13 +79,56 @@ struct HomeView: View {
     
     private var columnTitles: some View {
         HStack {
-            Text("Coin")
-            Spacer()
-            if showsPortfolio {
-                Text("Holding")
+            HStack {
+                Text("Coin")
+                Image(systemName: "chevron.down")
+                    .rotationEffect(Angle(degrees: store.sortBy == .rankDesc ? 0 : 180))
+                    .opacity((store.sortBy == .rankDesc || store.sortBy == .rankAsc) ? 1 : 0)
             }
+            .onTapGesture {
+                withAnimation {
+                    store.sortBy = (store.sortBy == .rankDesc) ? .rankAsc : .rankDesc
+                }
+            }
+            
             Spacer()
-            Text("Price")
+            
+            if showsPortfolio {
+                HStack {
+                    Text("Holding")
+                    Image(systemName: "chevron.down")
+                        .rotationEffect(Angle(degrees: store.sortBy == .holdingDesc ? 0 : 180))
+                        .opacity((store.sortBy == .holdingDesc || store.sortBy == .holdingAsc) ? 1 : 0)
+                }
+                .onTapGesture {
+                    withAnimation {
+                        store.sortBy = (store.sortBy == .holdingDesc) ? .holdingAsc : .holdingDesc
+                    }
+                }
+            }
+            
+            Spacer()
+            
+            HStack {
+                Text("Price")
+                Image(systemName: "chevron.down")
+                    .rotationEffect(Angle(degrees: store.sortBy == .priceDesc ? 0 : 180))
+                    .opacity((store.sortBy == .priceDesc || store.sortBy == .priceAsc) ? 1 : 0)
+            }
+            .onTapGesture {
+                withAnimation {
+                    store.sortBy = (store.sortBy == .priceDesc) ? .priceAsc : .priceDesc
+                }
+            }
+            
+            Button {
+                withAnimation(.linear(duration: 1.0)) {
+                    store.refresh()
+                }
+            } label: {
+                Image(systemName: "goforward").imageScale(.large)
+            }
+            .rotationEffect(Angle(degrees: store.isRefreshing ? 360 : 0))
         }
         .font(.caption)
         .foregroundColor(.theme.secondary)
@@ -121,7 +164,7 @@ struct HomeView: View {
             } else {
                 List {
                     ForEach(store.portfolioCoins) { coin in
-                        CoinRowView(coin: coin)
+                        CoinRowView(coin: coin, holdingIncluded: true)
                     }
                 }
             }
@@ -145,7 +188,6 @@ struct AnimatedCircleButton: View {
                 .background(Color.theme.background)
                 .clipShape(Circle())
                 .shadow(color: .theme.accent, radius: 10, x: 0.0, y: 0.0)
-            //.padding()
         }
     }
 }

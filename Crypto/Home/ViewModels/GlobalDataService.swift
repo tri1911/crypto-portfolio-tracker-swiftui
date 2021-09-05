@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 class GlobalDataService {
-    @Published var result: GlobalData?
+    @Published var globalData: GlobalData?
     private var cancellable: AnyCancellable?
     
     init() {
@@ -18,14 +18,13 @@ class GlobalDataService {
     
     func fetchGlobalData() {
         guard let url = URL(string: "https://api.coingecko.com/api/v3/global") else { return }
-        
+        cancellable?.cancel()
         cancellable = NetworkingManager.fetch(url)
             .decode(type: GlobalDataResponse.self, decoder: JSONDecoder())
             .map { $0.data }
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: NetworkingManager.handleCompletion) { [weak self] result in
-                self?.result = result
-                self?.cancellable?.cancel()
+                self?.globalData = result
             }
     }
 }

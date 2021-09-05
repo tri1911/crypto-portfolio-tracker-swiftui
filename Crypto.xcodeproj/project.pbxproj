@@ -14,6 +14,7 @@
 		03149BCD26E2DB4100C63BB4 /* CryptoPortfolio.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 03149BCB26E2DB4100C63BB4 /* CryptoPortfolio.xcdatamodeld */; };
 		03149BCF26E2E04A00C63BB4 /* PortfolioEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03149BCE26E2E04900C63BB4 /* PortfolioEditorView.swift */; };
 		033A3EAF26E4241200736409 /* UtilityViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033A3EAE26E4241200736409 /* UtilityViews.swift */; };
+		033A3EB126E46D7D00736409 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033A3EB026E46D7D00736409 /* HapticManager.swift */; };
 		03E3137626E1ADE00037A72F /* CryptoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E3137526E1ADE00037A72F /* CryptoApp.swift */; };
 		03E3137826E1ADE00037A72F /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E3137726E1ADE00037A72F /* HomeView.swift */; };
 		03E3137A26E1ADE40037A72F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03E3137926E1ADE40037A72F /* Assets.xcassets */; };
@@ -41,6 +42,7 @@
 		03149BCC26E2DB4100C63BB4 /* CryptoPortfolio.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CryptoPortfolio.xcdatamodel; sourceTree = "<group>"; };
 		03149BCE26E2E04900C63BB4 /* PortfolioEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioEditorView.swift; sourceTree = "<group>"; };
 		033A3EAE26E4241200736409 /* UtilityViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityViews.swift; sourceTree = "<group>"; };
+		033A3EB026E46D7D00736409 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		03E3137226E1ADE00037A72F /* Crypto.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Crypto.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		03E3137526E1ADE00037A72F /* CryptoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoApp.swift; sourceTree = "<group>"; };
 		03E3137726E1ADE00037A72F /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 				033A3EAE26E4241200736409 /* UtilityViews.swift */,
 				03E3138626E1B5270037A72F /* NetworkingManager.swift */,
 				03E3139D26E1E2160037A72F /* ImageCachingManager.swift */,
+				033A3EB026E46D7D00736409 /* HapticManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -271,6 +274,7 @@
 				03E313A026E1F7A70037A72F /* GlobalData.swift in Sources */,
 				03E3138926E1B75B0037A72F /* CoinInfo.swift in Sources */,
 				03E3137626E1ADE00037A72F /* CryptoApp.swift in Sources */,
+				033A3EB126E46D7D00736409 /* HapticManager.swift in Sources */,
 				03E3139326E1D57A0037A72F /* CoinImageView.swift in Sources */,
 				03149BB626E27F2F00C63BB4 /* StatisticInfo.swift in Sources */,
 				03E313A326E1FD430037A72F /* GlobalDataService.swift in Sources */,

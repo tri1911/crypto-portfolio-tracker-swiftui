@@ -9,20 +9,20 @@ import Foundation
 import Combine
 
 class HomeStore: ObservableObject {
-    @Published var coins: [CoinInfo]? // nil indicates the coins is loading
-    @Published var portfolioCoins: [CoinInfo] = []
-    @Published var statistics: [StatisticInfo] = []
+    @Published private(set) var coins: [CoinInfo]? // nil value: coins is loading
+    @Published private(set) var portfolioCoins: [CoinInfo] = []
+    @Published private(set) var statistics: [StatisticInfo] = []
+    @Published private(set) var isDataReady = false
     @Published var searchText = ""
-    @Published var isDataReady = false
+    
+    private var cancellables = Set<AnyCancellable>()
     
     private let marketDataService = CoinMarketDataService()
     private let globalDataService = GlobalDataService()
     private let portfolioDataManager = PortfolioDataManager.shared
     
-    private var cancellables = Set<AnyCancellable>()
-    
     init() {
-        // verify whether necessary data (statistics and coins) are loaded
+        // Verify whether necessary data (statistics and coins) are loaded
         $statistics.combineLatest($coins)
             .map { statistics, coins in
                 !statistics.isEmpty && coins != nil
@@ -31,37 +31,66 @@ class HomeStore: ObservableObject {
             .store(in: &cancellables)
         
         // Updates coin infos in market
-        marketDataService.$coins.combineLatest($searchText)
+        marketDataService.$coins.combineLatest($searchText, $sortBy)
             .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
-            .map { coins, searchText -> [CoinInfo]? in
+            .map { coins, searchText, sortBy -> [CoinInfo]? in
+                guard var results = coins else { return nil }
+                // filter by search query
                 if !searchText.isEmpty {
                     let query = searchText.lowercased()
-                    return coins?.filter {
+                    results = results.filter {
                         $0.id.lowercased().contains(query) || $0.name.lowercased().contains(query) || $0.symbol.lowercased().contains(query)
                     }
                 }
-                return coins
+                // sort coins
+                switch(sortBy) {
+                case .rankDesc:
+                    results.sort { $0.rank < $1.rank }
+                case .rankAsc:
+                    results.sort { $0.rank > $1.rank }
+                case .priceDesc:
+                    results.sort { $0.currentPrice > $1.currentPrice }
+                case .priceAsc:
+                    results.sort { $0.currentPrice < $1.currentPrice }
+                default:
+                    break
+                }
+                return results
             }
-            .assign(to: \.coins, on: self)
+            .sink { [weak self] results in
+                self?.coins = results
+                self?.isRefreshing = false
+            }
             .store(in: &cancellables)
         
-        // TODO: Figure out better solution, this solution takes O(n*d) time (n: total coins, d: # of coins in portfolio)
         // Updates coin infos in portfolio
         portfolioDataManager.$coins.combineLatest($coins)
-            .map { entities, coins -> [CoinInfo] in
-                guard let coins = coins else { return [] }
-                return coins.compactMap { info in
+            .map { [weak self] (entities, coins) -> [CoinInfo] in
+                guard let self = self, var results = coins else { return [] }
+                // TODO: Figure out better solution, this solution takes O(n*d) time (n: total coins, d: # of coins in portfolio)
+                // convert `Coin` entities in CoreData into `CoinInfo`s
+                results = results.compactMap { info in
                     if let entity = entities.first(where: { $0.id == info.id }) {
                         return info.updateHolding(to: entity.holding)
                     }
                     return nil
                 }
+                // sort portfolio coins
+                switch self.sortBy {
+                case .holdingDesc:
+                    results.sort { $0.holdingValue > $1.holdingValue }
+                case .holdingAsc:
+                    results.sort { $0.holdingValue < $1.holdingValue }
+                default:
+                    break
+                }
+                return results
             }
             .assign(to: \.portfolioCoins, on: self)
             .store(in: &cancellables)
         
         // Updates global statistic data
-        globalDataService.$result.combineLatest($portfolioCoins)
+        globalDataService.$globalData.combineLatest($portfolioCoins)
             .map { globalData, coins in
                 guard let data = globalData else { return [] }
                 // Global Data Statistics
@@ -72,7 +101,7 @@ class HomeStore: ObservableObject {
                 // Portfolio Statistics
                 // current holding value in total
                 let currentValue = coins
-                    .map { $0.holdingValue }
+                    .map(\.holdingValue) // equivalent to .map { $0.holdingValue }
                     .reduce(0, +)
                 // previous holding value in total
                 let previousValue = coins
@@ -86,7 +115,28 @@ class HomeStore: ObservableObject {
             .store(in: &cancellables)
     }
     
+    // MARK: - Intent(s)
+    
     func update(from info: CoinInfo, holding: Double) {
         portfolioDataManager.update(from: info, holding: holding)
+    }
+    
+    @Published var isRefreshing = false
+    
+    func refresh() {
+        isRefreshing = true
+        marketDataService.fetchCoins()
+        globalDataService.fetchGlobalData()
+        HapticManager.notification(type: .success)
+    }
+    
+    // MARK: - Sorting
+    
+    @Published var sortBy: SortBy = .rankDesc
+    
+    enum SortBy {
+        case rankDesc, rankAsc
+        case holdingDesc, holdingAsc
+        case priceDesc, priceAsc
     }
 }
