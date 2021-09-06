@@ -96,9 +96,9 @@ class HomeStore: ObservableObject {
             .map { globalData, coins in
                 guard let data = globalData else { return [] }
                 // Global Data Statistics
-                let marketCap = StatisticInfo(title: "Market Cap", value: data.marketCap, changePercentage: data.marketCapChangePercentage24HUsd)
-                let volume = StatisticInfo(title: "24h Volume", value: data.volume)
-                let btcDominance = StatisticInfo(title: "BTC Dominance", value: data.btcDominance)
+                let marketCap = StatisticInfo(title: "MARKET CAP", value: data.marketCap, changePercentage: data.marketCapChangePercentage24HUsd)
+                let volume = StatisticInfo(title: "24HR VOLUME", value: data.volume)
+                let btcDominance = StatisticInfo(title: "BTC DOMINANCE", value: data.btcDominance)
                 // TODO: The corner case when there is no coins in portfolio
                 // Portfolio Statistics
                 // current holding value in total

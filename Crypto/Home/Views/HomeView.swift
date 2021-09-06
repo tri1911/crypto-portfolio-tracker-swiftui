@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject var store: HomeStore
     @State private var showsPortfolio = false
+    @State private var coinDetailsToShow: CoinInfo?
     
     var body: some View {
         NavigationView {
@@ -45,10 +46,14 @@ struct HomeView: View {
                         
                         Spacer()
                     }
+                    .fullScreenCover(item: $coinDetailsToShow) { coin in
+                        CoinDetailsView(coin)
+                    } // use fullScreenCover to present Details view rather than using NavigationLink to avoid HomeView loading all coins' details info at once
                 }
             }
             .listStyle(PlainListStyle())
             .navigationBarHidden(true)
+            .navigationViewStyle(StackNavigationViewStyle())
             .ignoresSafeArea(edges: .bottom)
         }
     }
@@ -81,68 +86,81 @@ struct HomeView: View {
     
     private var columnTitles: some View {
         HStack {
-            HStack {
-                Text("Coin")
-                Image(systemName: "chevron.down")
-                    .rotationEffect(Angle(degrees: store.sortBy == .rankDesc ? 0 : 180))
-                    .opacity((store.sortBy == .rankDesc || store.sortBy == .rankAsc) ? 1 : 0)
-            }
-            .onTapGesture {
+            Button {
                 withAnimation {
                     store.sortBy = (store.sortBy == .rankDesc) ? .rankAsc : .rankDesc
                 }
+            } label: {
+                HStack(spacing: 2) {
+                    Text("RANK")
+                    Image(systemName: "chevron.down")
+                        .imageScale(.small)
+                        .rotationEffect(Angle(degrees: store.sortBy == .rankDesc ? 0 : 180))
+                        .opacity((store.sortBy == .rankDesc || store.sortBy == .rankAsc) ? 1 : 0)
+                }
             }
+            .padding(.trailing, 35)
             
             Spacer()
             
             if showsPortfolio {
-                HStack {
-                    Text("Holding")
-                    Image(systemName: "chevron.down")
-                        .rotationEffect(Angle(degrees: store.sortBy == .holdingDesc ? 0 : 180))
-                        .opacity((store.sortBy == .holdingDesc || store.sortBy == .holdingAsc) ? 1 : 0)
-                }
-                .onTapGesture {
+                Button {
                     withAnimation {
                         store.sortBy = (store.sortBy == .holdingDesc) ? .holdingAsc : .holdingDesc
+                    }
+                } label: {
+                    HStack(spacing: 2) {
+                        Text("HOLDINGS")
+                        Image(systemName: "chevron.down")
+                            .imageScale(.small)
+                            .rotationEffect(Angle(degrees: store.sortBy == .holdingDesc ? 0 : 180))
+                            .opacity((store.sortBy == .holdingDesc || store.sortBy == .holdingAsc) ? 1 : 0)
                     }
                 }
             }
             
             Spacer()
             
-            HStack {
-                Text("Price")
-                Image(systemName: "chevron.down")
-                    .rotationEffect(Angle(degrees: store.sortBy == .priceDesc ? 0 : 180))
-                    .opacity((store.sortBy == .priceDesc || store.sortBy == .priceAsc) ? 1 : 0)
-            }
-            .onTapGesture {
+            Button {
                 withAnimation {
                     store.sortBy = (store.sortBy == .priceDesc) ? .priceAsc : .priceDesc
                 }
+            } label: {
+                HStack(spacing: 2) {
+                    Text("PRICE")
+                    Image(systemName: "chevron.down")
+                        .imageScale(.small)
+                        .rotationEffect(Angle(degrees: store.sortBy == .priceDesc ? 0 : 180))
+                        .opacity((store.sortBy == .priceDesc || store.sortBy == .priceAsc) ? 1 : 0)
+                }
             }
             
-            Button {
-                withAnimation(.linear(duration: 1.0)) {
-                    store.refresh()
-                }
-            } label: {
-                Image(systemName: "goforward").imageScale(.large)
-            }
-            .rotationEffect(Angle(degrees: store.isRefreshing ? 360 : 0))
+//            Button {
+//                withAnimation(.linear(duration: 1.0)) {
+//                    store.refresh()
+//                }
+//            } label: {
+//                Image(systemName: "goforward").imageScale(.large)
+//            }
+//            .rotationEffect(Angle(degrees: store.isRefreshing ? 360 : 0))
         }
         .font(.caption)
         .foregroundColor(.theme.secondary)
         .padding(.horizontal)
     }
     
+    // TODO: might remove ProgressView and change coins in store to non-optional
     private var allCoinsList: some View {
         ZStack {
             if let coins = store.coins {
                 List {
                     ForEach(coins) { coin in
-                        CoinRowView(coin: coin)
+                        Button {
+                            coinDetailsToShow = coin
+                        } label: {
+                            CoinRowView(coin: coin)
+                        }
+                        .listRowBackground(Color.theme.background)
                     }
                 }
             } else {
@@ -166,31 +184,17 @@ struct HomeView: View {
             } else {
                 List {
                     ForEach(store.portfolioCoins) { coin in
-                        CoinRowView(coin: coin, holdingIncluded: true)
+                        Button {
+                            coinDetailsToShow = coin
+                        } label: {
+                            CoinRowView(coin: coin, holdingIncluded: true)
+                        }
+                        .listRowBackground(Color.theme.background)
                     }
                 }
             }
         }
         .transition(.move(edge: .trailing))
-    }
-}
-
-struct AnimatedCircleButton: View {
-    var imageName: String
-    var action: () -> Void
-    
-    var body: some View {
-        Button {
-            withAnimation(.spring()) {
-                action()
-            }
-        } label: {
-            Image(systemName: imageName)
-                .frame(width: 50, height: 50)
-                .background(Color.theme.background)
-                .clipShape(Circle())
-                .shadow(color: .theme.accent, radius: 10, x: 0.0, y: 0.0)
-        }
     }
 }
 

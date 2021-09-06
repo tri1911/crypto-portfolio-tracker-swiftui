@@ -59,7 +59,7 @@ struct CoinInfo: Identifiable, Codable {
     let currentPrice: Double
     let marketCap: Double
     let marketCapRank: Int
-    let fullyDilutedValuation: Double
+    let fullyDilutedValuation: Double?
     let totalVolume, high24H, low24H: Double
     let priceChange24H: Double
     let priceChangePercentage24H: Double

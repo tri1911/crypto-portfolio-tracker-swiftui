@@ -15,7 +15,7 @@ struct CoinRowView: View {
     
     var body: some View {
         HStack {
-            symbol
+            name
             Spacer()
             if holdingIncluded {
                 holdingValue
@@ -26,16 +26,23 @@ struct CoinRowView: View {
         .font(.subheadline)
     }
     
-    private var symbol: some View {
+    private var name: some View {
         HStack {
             Text("\(coin.marketCapRank)")
                 .font(.caption)
                 .foregroundColor(.theme.secondary)
+                .padding(.trailing, 6)
             CoinImageView(coin)
                 .frame(width: 30, height: 30)
-            Text(coin.symbol.uppercased())
-                .font(.headline)
-                .foregroundColor(.theme.accent)
+            VStack(alignment: .leading) {
+                Text(coin.symbol.uppercased())
+                    .font(.headline)
+                    .foregroundColor(.theme.accent)
+                Text(coin.name)
+                    .font(.caption)
+                    .foregroundColor(.theme.secondary)
+                    .lineLimit(1)
+            }
         }
     }
     
@@ -54,13 +61,9 @@ struct CoinRowView: View {
             Text("\(coin.currentPrice.asCurrencyString)")
                 .bold()
                 .foregroundColor(.theme.accent)
-            HStack(spacing: 3) {
-                Image(systemName: "triangle.fill")
-                    .rotationEffect(Angle(degrees: isPositiveChange ? 0 : 180))
-                    .font(.caption2)
-                Text("\(coin.priceChangePercentage24H.asPercentString)")
-            }
-            .foregroundColor(isPositiveChange ? .theme.green : .theme.red)
+            Text("\(isPositiveChange ? "+" : "")" + coin.priceChangePercentage24H.asPercentString)
+                .font(.caption)
+                .foregroundColor(isPositiveChange ? .theme.green : .theme.red)
         }
     }
 }

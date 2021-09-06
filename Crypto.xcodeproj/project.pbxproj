@@ -121,13 +121,37 @@
 		031E6A9226E47EBF005B6C4E /* CoinDetails */ = {
 			isa = PBXGroup;
 			children = (
+				036BDD6426E6783B00645ED7 /* Model */,
+				036BDD6526E6784400645ED7 /* Views */,
+				036BDD6626E6785D00645ED7 /* ViewModel */,
+			);
+			path = CoinDetails;
+			sourceTree = "<group>";
+		};
+		036BDD6426E6783B00645ED7 /* Model */ = {
+			isa = PBXGroup;
+			children = (
 				031E6A9526E4859D005B6C4E /* CoinDetails.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		036BDD6526E6784400645ED7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
 				031E6A9726E485C7005B6C4E /* CoinDetailsView.swift */,
 				039691EF26E5550B00BCF649 /* ChartView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		036BDD6626E6785D00645ED7 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
 				031E6A9926E48629005B6C4E /* CoinDetailsStore.swift */,
 				031E6A9326E48561005B6C4E /* CoinDetailsService.swift */,
 			);
-			path = CoinDetails;
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		03E3136926E1ADE00037A72F = {
@@ -151,9 +175,9 @@
 			children = (
 				03E3137526E1ADE00037A72F /* CryptoApp.swift */,
 				03E3139C26E1DB260037A72F /* Home */,
+				031E6A9226E47EBF005B6C4E /* CoinDetails */,
 				03E313A126E1FCDD0037A72F /* StatisticInfo */,
 				03E3139B26E1DB1E0037A72F /* CoinImage */,
-				031E6A9226E47EBF005B6C4E /* CoinDetails */,
 				03E3139726E1D6B90037A72F /* Utilities */,
 				03E3137926E1ADE40037A72F /* Assets.xcassets */,
 				03E3137E26E1ADE40037A72F /* Info.plist */,

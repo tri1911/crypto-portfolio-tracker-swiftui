@@ -7,6 +7,25 @@
 
 import SwiftUI
 
+struct AnimatedCircleButton: View {
+    var imageName: String
+    var action: () -> Void
+    
+    var body: some View {
+        Button {
+            withAnimation(.spring()) {
+                action()
+            }
+        } label: {
+            Image(systemName: imageName)
+                .frame(width: 50, height: 50)
+                .background(Color.theme.background)
+                .clipShape(Circle())
+                .shadow(color: .theme.accent, radius: 10, x: 0.0, y: 0.0)
+        }
+    }
+}
+
 struct LoadingView: View {
     var body: some View {
         ZStack {

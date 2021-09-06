@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CoinDetailsView: View {
+    @Environment(\.presentationMode) var presentationMode
     @StateObject var store: CoinDetailsStore
     
     private let columns = Array(repeating: GridItem(), count: 2)
@@ -18,25 +19,25 @@ struct CoinDetailsView: View {
     }
     
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack {
-                ChartView(coin: store.coinInfo).padding(.vertical)
-                overview
-                additional
-                links
+        NavigationView {
+            ScrollView(showsIndicators: false) {
+                VStack {
+                    ChartView(coin: store.coinInfo).padding(.vertical)
+                    overview
+                    additional
+                    links
+                }
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
-        }
-        .background(Color.theme.background.ignoresSafeArea())
-        .navigationTitle(store.coinInfo.name)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                HStack {
-                    Text(store.coinInfo.symbol.uppercased())
-                        .font(.headline)
-                        .foregroundColor(.theme.secondary)
-                    CoinImageView(store.coinInfo)
-                        .frame(width: 25, height: 25)
+            .background(Color.theme.background.ignoresSafeArea())
+            .navigationTitle(store.coinInfo.name)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
                 }
             }
         }

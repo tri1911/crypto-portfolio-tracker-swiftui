@@ -10,20 +10,25 @@ import SwiftUI
 struct PortfolioEditorView: View {
     @EnvironmentObject var store: HomeStore
     @Environment(\.presentationMode) var presentationMode
-
+    @State private var selectedCoin: CoinInfo?
+    @State private var holdingText = ""
+    
     private var coins: [CoinInfo] { store.searchText.isEmpty ? store.portfolioCoins : (store.coins ?? []) }
     
     var body: some View {
         NavigationView {
-            VStack {
-                coinsList
-                SearchBarView(searchText: $store.searchText)
-                selectedCoinInfo
-                Spacer()
+            ScrollView {
+                VStack {
+                    SearchBarView(searchText: $store.searchText)
+                    coinsList
+                    if selectedCoin != nil {
+                        inputView
+                    }
+                    Spacer()
+                }
             }
             .background(Color.theme.background.ignoresSafeArea())
-            .navigationTitle("Portfolio Editor")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Add Coin")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
@@ -31,12 +36,20 @@ struct PortfolioEditorView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if let coin = selectedCoin, let holding = Double(holdingInput) {
-                        Button("Done") {
+                    // TODO: holding property of portfolio coin from global listis not in sync with the one in the portfolio list
+                    // so, Save button still show even when the portfolio coin's holding does not change
+                    if let coin = selectedCoin, let holding = Double(holdingText), holding != coin.holding {
+                        Button("Save") {
                             store.update(from: coin, holding: holding)
-                            presentationMode.wrappedValue.dismiss()
+                            selectedCoin = nil
+                            UIApplication.shared.endEditing()
                         }
                     }
+                }
+            }
+            .onChange(of: store.searchText) { text in
+                if text.isEmpty {
+                    selectedCoin = nil
                 }
             }
         }
@@ -49,6 +62,12 @@ struct PortfolioEditorView: View {
                     Button {
                         withAnimation {
                            selectedCoin = coin
+                            if let portfolioCoin = store.portfolioCoins.first(where: { $0.id == coin.id }),
+                               let currentHolding = portfolioCoin.holding {
+                                holdingText = String(currentHolding)
+                            } else {
+                                holdingText = ""
+                            }
                         }
                     } label: {
                         CoinLogoView(coin: coin)
@@ -64,17 +83,14 @@ struct PortfolioEditorView: View {
         }
     }
     
-    @State private var selectedCoin: CoinInfo?
-    @State private var holdingInput = ""
-    
-    private var holdingValue: String {
-        if let holding = Double(holdingInput), let price = selectedCoin?.currentPrice {
+    private var currentHoldingValue: String {
+        if let holding = Double(holdingText), let price = selectedCoin?.currentPrice {
             return (holding * price).asCurrencyString
         }
         return ""
     }
     
-    private var selectedCoinInfo: some View {
+    private var inputView: some View {
         VStack {
             HStack {
                 Text("Current Price: ")
@@ -85,7 +101,7 @@ struct PortfolioEditorView: View {
             HStack {
                 Text("Holding Amount: ")
                 Spacer()
-                TextField("e.g. 1.23", text: $holdingInput)
+                TextField("e.g. 1.23", text: $holdingText)
                     .multilineTextAlignment(.trailing)
                     .keyboardType(.decimalPad)
             }
@@ -93,9 +109,11 @@ struct PortfolioEditorView: View {
             HStack {
                 Text("Current Value: ")
                 Spacer()
-                Text(holdingValue)
+                Text(currentHoldingValue)
             }
         }
+        .padding()
+        .font(.headline)
     }
 }
 
