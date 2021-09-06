@@ -8,11 +8,13 @@
 import Foundation
 import Combine
 
+// TODO: should coins be optional?
 class HomeStore: ObservableObject {
     @Published private(set) var coins: [CoinInfo]? // nil value: coins is loading
     @Published private(set) var portfolioCoins: [CoinInfo] = []
     @Published private(set) var statistics: [StatisticInfo] = []
     @Published private(set) var isDataReady = false
+    @Published private(set) var isRefreshing = false
     @Published var searchText = ""
     
     private var cancellables = Set<AnyCancellable>()
@@ -45,9 +47,9 @@ class HomeStore: ObservableObject {
                 // sort coins
                 switch(sortBy) {
                 case .rankDesc:
-                    results.sort { $0.rank < $1.rank }
+                    results.sort { $0.marketCapRank < $1.marketCapRank }
                 case .rankAsc:
-                    results.sort { $0.rank > $1.rank }
+                    results.sort { $0.marketCapRank > $1.marketCapRank }
                 case .priceDesc:
                     results.sort { $0.currentPrice > $1.currentPrice }
                 case .priceAsc:
@@ -120,8 +122,6 @@ class HomeStore: ObservableObject {
     func update(from info: CoinInfo, holding: Double) {
         portfolioDataManager.update(from: info, holding: holding)
     }
-    
-    @Published var isRefreshing = false
     
     func refresh() {
         isRefreshing = true

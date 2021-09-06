@@ -62,6 +62,8 @@ struct HomeView: View {
                     showsPortfolioEditor = true
                 }
             }
+            .animation(.none)
+            .overlay(CircleAnimationView(animate: $showsPortfolio))
             Spacer()
             Text(showsPortfolio ? "Portfolio" : "Live Prices")
                 .fontWeight(.heavy)

@@ -57,18 +57,20 @@ struct CoinInfo: Identifiable, Codable {
     let id, symbol, name: String
     let image: String
     let currentPrice: Double
-    let marketCap, marketCapRank, fullyDilutedValuation: Double?
+    let marketCap: Double
+    let marketCapRank: Int
+    let fullyDilutedValuation: Double
     let totalVolume, high24H, low24H: Double
     let priceChange24H: Double
     let priceChangePercentage24H: Double
-    let marketCapChange24H: Double?
-    let marketCapChangePercentage24H: Double?
+    let marketCapChange24H: Double
+    let marketCapChangePercentage24H: Double
     let circulatingSupply, totalSupply, maxSupply, ath: Double?
     let athChangePercentage: Double?
     let athDate: String?
     let atl, atlChangePercentage: Double?
     let atlDate: String?
-    let lastUpdated: String?
+    let lastUpdated: String
     let sparklineIn7D: SparklineIn7D?
     let priceChangePercentage24HInCurrency: Double?
     var holding: Double? // Custom stored property that is used in portfolio page
@@ -109,10 +111,6 @@ struct CoinInfo: Identifiable, Codable {
     
     var holdingValue: Double {
         (holding ?? 0) * currentPrice
-    }
-    
-    var rank: Int {
-        Int(marketCapRank ?? 0)
     }
 }
 

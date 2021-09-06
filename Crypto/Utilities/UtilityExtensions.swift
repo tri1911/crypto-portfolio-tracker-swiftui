@@ -317,3 +317,25 @@ extension NSPredicate {
     static var all = NSPredicate(format: "TRUEPREDICATE")
     static var none = NSPredicate(format: "FALSEPREDICATE")
 }
+
+// MARK: - String
+
+extension String {
+    var toDate: Date {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        return formatter.date(from: self) ?? Date()
+    }
+    
+    var withoutHTMLTags: String {
+        replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
+    }
+}
+
+extension Date {
+    var toString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM dd, YYYY"
+        return formatter.string(from: self)
+    }
+}
